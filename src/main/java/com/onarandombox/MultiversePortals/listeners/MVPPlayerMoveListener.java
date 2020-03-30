@@ -89,8 +89,9 @@ public class MVPPlayerMoveListener implements Listener {
                     // Portal not handled by script
                 }
             }
-            if (!ps.allowTeleportViaCooldown(new Date())) {
-                p.sendMessage(ps.getFriendlyRemainingTimeMessage());
+            long cooldown_ms = ps.getRemainingTeleportCooldown(new Date());
+            if (cooldown_ms > 0) {
+                p.sendMessage(ps.getCooldownMessage(cooldown_ms));
                 return;
             }
             // If they're using Access and they don't have permission and they're NOT excempt, return, they're not allowed to tp.

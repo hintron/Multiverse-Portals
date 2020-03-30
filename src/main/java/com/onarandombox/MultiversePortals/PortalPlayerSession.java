@@ -282,31 +282,31 @@ public class PortalPlayerSession {
         this.lastTeleportTime = date;
     }
 
-    public boolean allowTeleportViaCooldown(Date date) {
-        return (date.after(new Date(this.lastTeleportTime.getTime() + this.plugin.getCooldownTime())));
-    }
-
-    public String getFriendlyRemainingTimeMessage() {
-        String remaining = "There is a portal " + ChatColor.AQUA + "cooldown" + ChatColor.WHITE + " in effect. Please try again in " + ChatColor.GOLD
-        + Integer.toString((int) this.getRemainingCooldown() / 1000) + "s.";
-        int time = (int) this.getRemainingCooldown() / 1000;
-        // Account for the fact that 0 seconds means 1
-        time++;
-        if (time <= 0) {
-            remaining += "< 1s" + ChatColor.WHITE + ".";
+    /**
+     * Check if the teleport cooldown will finish before the given time is
+     * reached. If so, return the remaining cooldown time in ms. If not, return 0.
+     */
+    public long getRemainingTeleportCooldown(Date time) {
+        long cooldown_end_ms = this.lastTeleportTime.getTime() + this.plugin.getCooldownTime();
+        long time_ms = time.getTime();
+        if (cooldown_end_ms > time_ms) {
+            return cooldown_end_ms - time_ms;
         } else {
-            remaining += time + "s" + ChatColor.WHITE + ".";
+            return 0;
         }
-        return remaining;
     }
 
-    public long getRemainingCooldown() {
-        //Calculate the remaining cooldown period
-        long remainingcooldown = (this.plugin.getCooldownTime() - ((new Date()).getTime() - this.lastTeleportTime.getTime()));
-        if (remainingcooldown < 0) {
-            remainingcooldown = 0;
-        }
-        return remainingcooldown;
+    public String getCooldownMessage(long cooldown_ms) {
+        String remaining = "There is a portal " + ChatColor.AQUA + "cooldown " +
+            ChatColor.WHITE + "in effect. Please try again in " +
+            ChatColor.GOLD;
 
+        if (cooldown_ms < 1000) {
+            remaining += "1 s";
+        } else {
+            remaining += (cooldown_ms/1000) + " s";
+        }
+        remaining += ChatColor.WHITE + ".";
+        return remaining;
     }
 }

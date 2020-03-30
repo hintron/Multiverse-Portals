@@ -101,8 +101,9 @@ public class MVPVehicleListener implements Listener {
         // AND if we did not show debug info, do the stuff
         // The debug is meant to toggle.
         if (portal != null && ps.doTeleportPlayer(MoveType.VEHICLE_MOVE) && !ps.showDebugInfo()) {
-            if (!ps.allowTeleportViaCooldown(new Date())) {
-                p.sendMessage(ps.getFriendlyRemainingTimeMessage());
+            long cooldown_ms = ps.getRemainingTeleportCooldown(new Date());
+            if (cooldown_ms > 0) {
+                p.sendMessage(ps.getCooldownMessage(cooldown_ms));
                 return false;
             }
             // TODO: Money
