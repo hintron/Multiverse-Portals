@@ -39,18 +39,15 @@ public class ListCommand extends PortalCommand {
         if (args.size() > 0) {
             world = this.plugin.getCore().getMVWorldManager().getMVWorld(args.get(args.size() - 1));
             filter = args.get(0);
-        }
-        if (args.size() == 2) {
-            if (world == null) {
+            if (args.size() == 2 && world == null) {
                 sender.sendMessage("Multiverse does not know about " + ChatColor.GOLD + args.get(1));
                 return;
+            } else if (world == null && filter == null) {
+                sender.sendMessage("Multiverse does not know about " + ChatColor.GOLD + args.get(1));
+                return;
+            } else if (args.size() == 1 && world != null) {
+                filter = null;
             }
-        } else if (world == null && filter == null && args.size() > 0) {
-            sender.sendMessage("Multiverse does not know about " + ChatColor.GOLD + args.get(1));
-            return;
-        }
-        if (args.size() == 1 && world != null) {
-            filter = null;
         }
         String titleString = ChatColor.AQUA + "Portals";
         if (world != null) {
